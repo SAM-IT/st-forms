@@ -65,6 +65,8 @@ hello
     <div class="form-group">
         <label for="input1">Text 1</label>
         <input id="input1" class="form-control" type="text" name="text1" st-input st-validators='["return value == \"test123test\" ? true : \"Text 1 must equal test123test \";", "var messages = [];\n                \nif(value.length<1) {\n\tmessages.push(\"Code is too short (minimum is 1 characters).\");\n}\n\nif(value.length>5) {\n\tmessages.push(\"Code is too long (maximum is 5 characters).\");\n}\n\n                return messages.length == 0 ? true : messages;"]' st-getter="return $(this).val() + 'test';"/>
+        This input has a special getter: return $(this).val() + 'test';
+        So when validating omit the word test since the getter appends it.
     </div>
     <div class="form-group">
         <label for="input2">Text 2</label>
