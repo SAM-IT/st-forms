@@ -1,9 +1,20 @@
 (function($) {
 
     var self = $.fn.stForm = function() {
-        this.on('change', '[st-form]', self.validate);
-        this.on('submit', '[st-form]', self.submit)
-        this.on('keyup blur', '[st-form][st-form-validate-live]', self.validate);
+        this.on('change', '[st-form]', function(e) { return self.validate(e.target); });
+        this.on('submit', function(e) {
+            // Submit can have a target that is not the st-form.
+            $target = $(e.target).find('[st-form]');
+
+            $target.each(function () {
+                if (!self.submit(this)) {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    return;
+                }
+            });
+        });
+        this.on('keyup blur', '[st-form][st-form-validate-live]', function(e) { return self.validate(e.target); });
     }
     self.settings = function(target) {
         var result  = {};
@@ -16,12 +27,11 @@
         return result;
     };
     // Prevent submission on input errors.
-    self.submit = function(e) {
-        var settings = self.settings(e.target);
-        self.validate(e);
-        if (settings.$form.find('.' + settings.invalidClass).length > 0) {
-            e.preventDefault();
-        }
+    self.submit = function(target) {
+        // Submit can have a target that is not the st-form.
+        var settings = self.settings(target);
+        self.validate(target);
+        return (settings.$form.find('.' + settings.invalidClass).length == 0);
     };
     self.getters = {
         'radio' : function() { return $(this).find(':checked').val() || []; },
@@ -39,10 +49,10 @@
         }
         return self.getters[definition];
     };
-    self.validate = function (e) {
-        var settings = self.settings(e.target);
+    self.validate = function (target) {
+        var settings = self.settings(target);
 
-        $(e.target).closest('[st-input]').closest(settings.validationTarget).addClass(settings.touchedClass);
+        $(target).closest('[st-input]').closest(settings.validationTarget).addClass(settings.touchedClass);
         // Find all elements for form.
         // Support all elements that have a validator.
         $elements = settings.$form.find('[st-input]');
