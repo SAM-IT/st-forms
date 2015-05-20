@@ -1,0 +1,152 @@
+<html>
+<script src="https://code.jquery.com/jquery-2.1.4.js"></script>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script src="samit-forms.js"></script>
+<script>
+
+
+    $(document).ready(function() {
+        // Bind events.
+        $('body').stForm();
+    });
+
+</script>
+<style>
+    /* Don't display errors for untouched elements. */
+    .st-error {
+        display: none;
+    }
+    .st-error.st-touched{
+        display: block;
+    }
+
+    /* Don't display error containers if empty */
+    [st-error]:empty {
+        display: none;
+    }
+    /* Debugging: show border around touched */
+    .st-touched[st-input] {
+        /*border: 20px solid purple;*/
+    }
+
+    /* Debugging: set background for dirty */
+    .st-dirty[st-input] {
+        background-color: brown;
+    }
+
+    /* Subtle highlight for untouched but incorrect inputs */
+    .st-invalid {
+        background-color: rgba(255, 0, 0, 0.1);
+    }
+
+    /* Not so subtle highlight for touched and incorrect inputs */
+    .st-touched.st-invalid {
+        background-color: rgba(255, 0, 0, 0.9);
+    }
+
+</style>
+<body>
+hello
+<form id="test"
+      st-form
+      st-form-validate-live
+      st-target=".form-group"
+      st-invalid-class="has-error"
+      st-valid-class="has-success"
+      style="width: 50%">
+    <div st-error="*" style="border: 1px solid black; background-color: sandybrown;"></div>
+    <div class="form-group">
+        <label for="input1">Text 1</label>
+        <input id="input1" class="form-control" type="text" name="text1" st-input st-validators='["return value == \"test123test\" ? true : \"Text 1 must equal test123test \";", "var messages = [];\n                \nif(value.length<1) {\n\tmessages.push(\"Code is too short (minimum is 1 characters).\");\n}\n\nif(value.length>5) {\n\tmessages.push(\"Code is too long (maximum is 5 characters).\");\n}\n\n                return messages.length == 0 ? true : messages;"]' st-getter="return $(this).val() + 'test';"/>
+    </div>
+    <div class="form-group">
+        <label for="input2">Text 2</label>
+        <input id="input2" class="form-control" type="text" name="text2" st-input st-validators='["return values.text1.value == value ? true : \"Text 2 must equal text1\";"]'/>
+        <div class="help-block" st-error="text2"></div>
+
+    </div>
+    <div class="form-group">
+        <label for="input3">Select</label>
+        <select class="form-control" name="select" id="input3" st-input st-validators='["return value != \"\" ? true : \"Select 3 is required\";"]' st-getter="array">
+            <option value="">Select one</option>
+            <option value="1">Value 1</option>
+            <option value="2">Value 2</option>
+            <option value="3">Value 3</option>
+        </select>
+        <div class="help-block" st-error="select"></div>
+    </div>
+    <div class="form-group">
+        <div name="radio" st-input st-validators='["return parseInt(value) > 2 ? true : \"Minimum is 3\";"]' st-getter="radio">
+            <input value="1" type="radio" name="radio" id="input41" >
+            <label for="input41">Option 1</label>
+            <input value="2" type="radio" name="radio" id="input42">
+            <label for="input42">Option 2</label>
+            <input value="3" type="radio" name="radio" id="input43">
+            <label for="input43">Option 3</label>
+            <input value="4" type="radio" name="radio" id="input44">
+            <label for="input44">Option 4</label>
+        </div>
+        <div st-error="radio"></div>
+    </div>
+    <div class="form-group">
+        <label for="input5">Select multiple</label>
+        <select name="input5" multiple="multiple" id="input5" st-getter="array" st-input st-validators='["return value.length > 1 ? true : \"Select at least 2 options.\";"]'>
+            <option value="1">Value 1</option>
+            <option value="2">Value 2</option>
+            <option value="3">Value 3</option>
+            <option value="4">Value 4</option>
+            <option value="5">Value 5</option>
+            <option value="6">Value 6</option>
+        </select>
+        <div st-error="select5"></div>
+    </div>
+    <div class="form-group">
+        <div name="radio2" st-input st-validators='["return parseInt(value) <= 3 ? true : \"Maximum is 3\";"]' st-getter="radio">
+            <input value="1" type="radio" name="radio2" id="input61" >
+            <label for="input61">Option 1</label>
+            <input value="2" type="radio" name="radio2" id="input62">
+            <label for="input62">Option 2</label>
+            <input value="3" type="radio" name="radio2" id="input63">
+            <label for="input63">Option 3</label>
+            <input value="4" type="radio" name="radio2" id="input64">
+            <label for="input64">Option 4</label>
+        </div>
+        <div st-error="radio"></div>
+    </div>
+    <div class="form-group">
+        <div name="toggler" id="divtoggle" style="user-select:none; -webkit-user-select: none; " class="form-control" st-validators='["return (value.slice(4, -1).split(\", \")[0] > 200) ? true : \" Red must be dominant > 200 \";"]' st-input st-getter="return $(this).css('background-color');">
+        This is a custom toggle, it uses a div only; no underlying input element is used.
+        <script>
+            $('#divtoggle').on('click', function() {
+                var color = $(this).data('color') || [
+                        255,
+                        255,
+                        255
+                ];
+                color[0] = (color[0] + 50) % 255;
+                color[1] = (color[0] + 30) % 255;
+                color[2] = (color[0] + 20) % 255;
+                $(this).css('background-color', "rgb(" + color.join() + ")");
+                $(this).data('color', color);
+                $(this).text("rgb(" + color.join() + ")");
+                $(this).trigger('change');
+            });
+        </script>
+        </div>
+        <div class="help-block" st-error="toggler"></div>
+    </div>
+    <input type="submit"/>
+
+</form>
+<form id="for2" st-form st-form-validate-live style="width: 50%">
+
+</form>
+</body>
+</html>
