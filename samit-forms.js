@@ -1,7 +1,7 @@
 (function($) {
 
     var self = $.fn.stForm = function() {
-        this.on('change', '[st-form]', function(e) { return self.validate(e.target); });
+        this.on('input', '[st-form]', function(e) { return self.validate(e.target); });
         this.on('submit', function(e) {
             // Submit can have a target that is not the st-form.
             $target = $(e.target).find('[st-form]');
@@ -14,7 +14,6 @@
                 }
             });
         });
-        this.on('keyup blur', '[st-form][st-form-validate-live]', function(e) { return self.validate(e.target); });
     }
     self.settings = function(target) {
         var result  = {};
@@ -68,6 +67,7 @@
             var formElement = {
                 dirty : $elem.is('.st-dirty'),
                 $target : $target = $elem.closest(settings.validationTarget),
+                $highlight : $('[st-mark="' + name + '"]'),
                 touched : $target.hasClass(settings.touchedClass),
                 validators: [],
                 name: name,
@@ -111,6 +111,7 @@
         $.each(formElements, function(i, formElement) {
             if (!formElement.valid) {
                 formElement.$target.addClass(settings.invalidClass).removeClass(settings.validClass);
+                formElement.$highlight.addClass(settings.invalidClass).removeClass(settings.validClass);
                 for (var i = formElement.errors.length - 1; i >= 0; i--) {
                     var error = $('<p/>');
                     error.addClass('st-error');
@@ -122,6 +123,7 @@
 
                 }
             } else {
+                formElement.$highlight.removeClass(settings.invalidClass).addClass(settings.validClass);
                 formElement.$target.removeClass(settings.invalidClass).addClass(settings.validClass);
             }
         });
