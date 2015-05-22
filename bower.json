@@ -1,0 +1,23 @@
+{
+  "name": "samit-forms",
+  "version": "1.0.0",
+  "homepage": "https://github.com/SAM-IT/st-forms",
+  "authors": [
+    "Sam <sam@mousa.nl>"
+  ],
+  "description": "Form validation using html attributes only.",
+  "main": "samit-forms.js",
+  "keywords": [
+    "form",
+    "validation",
+    "html5"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
